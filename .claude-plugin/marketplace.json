@@ -5,14 +5,14 @@
   },
   "metadata": {
     "description": "Read-only Oura Ring data (readiness, sleep, HRV, activity, heart rate) for Claude Code.",
-    "version": "0.1.0"
+    "version": "0.1.1"
   },
   "plugins": [
     {
       "name": "oura",
       "source": "./plugin",
       "description": "Ask Claude about your Oura Ring readiness, sleep, HRV, activity, heart rate and trends. Read-only by design.",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "tags": [
         "oura",
         "health",

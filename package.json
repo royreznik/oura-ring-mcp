@@ -1,6 +1,6 @@
 {
   "name": "@royreznik/oura-ring-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Read-only MCP server for your Oura Ring data: readiness, sleep, activity, HRV, heart rate and trends.",
   "keywords": [
     "mcp",
