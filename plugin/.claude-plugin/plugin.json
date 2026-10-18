@@ -1,6 +1,6 @@
 {
   "name": "oura",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "Ask Claude about your Oura Ring readiness, sleep, HRV, activity, heart rate and trends. Read-only by design: it can never change your Oura data.",
   "author": {
     "name": "Roy Reznik",

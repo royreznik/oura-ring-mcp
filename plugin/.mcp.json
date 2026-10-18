@@ -4,7 +4,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "@royreznik/oura-ring-mcp@0.1.1"
+        "@royreznik/oura-ring-mcp@1.0.0"
       ]
     }
   }

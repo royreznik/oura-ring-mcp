@@ -10,7 +10,7 @@ The oura plugin's tools need a one-time sign-in. The sign-in asks for a secret a
 1. **Check the current state** by running:
 
    ```bash
-   npx -y @royreznik/oura-ring-mcp@0.1.1 status
+   npx -y @royreznik/oura-ring-mcp@1.0.0 status
    ```
 
    If it prints `Connected …`, the plugin is ready and nothing else is needed.
@@ -20,7 +20,7 @@ The oura plugin's tools need a one-time sign-in. The sign-in asks for a secret a
    - Run this in a separate terminal window, paste the app's Client ID and Client Secret when asked (the secret is not echoed), and approve access in the browser, leaving every data type ticked:
 
      ```bash
-     npx -y @royreznik/oura-ring-mcp@0.1.1 auth
+     npx -y @royreznik/oura-ring-mcp@1.0.0 auth
      ```
 
 3. **Common problems:**
@@ -30,4 +30,4 @@ The oura plugin's tools need a one-time sign-in. The sign-in asks for a secret a
 
 4. **After it prints `Connected …`**, retry the Oura question. No restart is needed: the server reads the new tokens on its next call.
 
-To disconnect, the user can run `npx -y @royreznik/oura-ring-mcp@0.1.1 logout`. Everything is read-only.
+To disconnect, the user can run `npx -y @royreznik/oura-ring-mcp@1.0.0 logout`. Everything is read-only.
