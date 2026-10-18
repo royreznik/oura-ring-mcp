@@ -136,9 +136,10 @@ export function createServer(client: OuraClient, version = "0.0.0"): McpServer {
       title: "Get Oura profile",
       description:
         "Get the user's Oura profile and ring hardware: age, height, weight, biological sex and email; each ring's model, size, color, firmware and setup date; and the latest battery level with its timestamp. Use it for questions about the person or the device, or to put scores in context (e.g. age next to VO2 max or cardiovascular age). Takes no arguments. A part Oura won't share (scope not granted) comes back as an error field while the rest still returns.",
+      inputSchema: {},
       annotations: READ_ONLY,
     },
-    ({ signal }) =>
+    (_args, { signal }) =>
       respond(async () => {
         const oura = client.withSignal(signal);
         const [info, rings, battery] = await Promise.all([

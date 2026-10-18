@@ -3,6 +3,7 @@
 [![npm](https://img.shields.io/npm/v/@royreznik/oura-ring-mcp)](https://www.npmjs.com/package/@royreznik/oura-ring-mcp)
 [![CI](https://github.com/royreznik/oura-ring-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/royreznik/oura-ring-mcp/actions/workflows/ci.yml)
 [![oura-ring-mcp MCP server – quality and maintenance score on Glama](https://glama.ai/mcp/servers/royreznik/oura-ring-mcp/badges/score.svg)](https://glama.ai/mcp/servers/royreznik/oura-ring-mcp)
+[![M8ven Verified](https://m8ven.ai/api/agent-verify/badge?score=98)](https://m8ven.ai/verified/verify?id=ae1d46e5943700fc)
 [![Node](https://img.shields.io/badge/node-%E2%89%A520.11-339933?logo=nodedotjs&logoColor=white)](package.json)
 [![Read-only](https://img.shields.io/badge/data_access-read--only-2ea44f)](SECURITY.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)

@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- `get_profile` declares an explicit (empty) input schema.
+
 ## [0.1.1]
 
 - Rewrote every tool description to say what the tool does, when to use it instead of its siblings, and how ranges, ordering, pagination and missing days behave.
