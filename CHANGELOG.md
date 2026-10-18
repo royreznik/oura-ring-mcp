@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+- Rewrote every tool description to say what the tool does, when to use it instead of its siblings, and how ranges, ordering, pagination and missing days behave.
+- `get_heart_rate` returns `truncated: true` instead of a `next_token` it had no way to accept back.
+
 ## [0.1.0]
 
 - First release: 14 read-only tools over the Oura API v2 (daily overview, trends, readiness, sleep scores, sleep periods with hypnograms, activity, workouts, sessions, stress/resilience/SpO2/cardiovascular age/VO2 max, tags, rest mode, heart rate, profile).
