@@ -2,7 +2,13 @@
 
 ## [Unreleased]
 
-- `get_profile` declares an explicit (empty) input schema.
+## [1.0.0]
+
+First stable release. Tool names, inputs and output shapes are now covered by semver: breaking changes will only ship in a new major version.
+
+- `get_profile` declares an explicit (empty) input schema with zod, so every tool declares one.
+- Verified on a real Oura account: all 14 tools, OAuth with PKCE, and single-use refresh-token rotation.
+- Listed on npm, the MCP Registry, Glama (all tools rated A) and M8ven (A, Trusted).
 
 ## [0.1.1]
 
