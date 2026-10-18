@@ -1,0 +1,22 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.royreznik/oura-ring-mcp",
+  "title": "Oura Ring (read-only)",
+  "description": "Read-only access to your Oura Ring readiness, sleep, activity, HRV, heart rate and trends.",
+  "repository": {
+    "url": "https://github.com/royreznik/oura-ring-mcp",
+    "source": "github"
+  },
+  "websiteUrl": "https://github.com/royreznik/oura-ring-mcp#readme",
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@royreznik/oura-ring-mcp",
+      "version": "0.1.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}

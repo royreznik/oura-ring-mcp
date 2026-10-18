@@ -1,0 +1,22 @@
+{
+  "name": "oura",
+  "version": "0.1.0",
+  "description": "Ask Claude about your Oura Ring readiness, sleep, HRV, activity, heart rate and trends. Read-only by design: it can never change your Oura data.",
+  "author": {
+    "name": "Roy Reznik",
+    "url": "https://github.com/royreznik"
+  },
+  "homepage": "https://github.com/royreznik/oura-ring-mcp#readme",
+  "repository": "https://github.com/royreznik/oura-ring-mcp",
+  "license": "MIT",
+  "keywords": [
+    "oura",
+    "oura-ring",
+    "health",
+    "sleep",
+    "readiness",
+    "hrv",
+    "wearables",
+    "read-only"
+  ]
+}

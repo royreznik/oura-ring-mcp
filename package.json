@@ -1,0 +1,68 @@
+{
+  "name": "@royreznik/oura-ring-mcp",
+  "version": "0.1.0",
+  "description": "Read-only MCP server for your Oura Ring data: readiness, sleep, activity, HRV, heart rate and trends.",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "oura",
+    "oura-ring",
+    "claude",
+    "health",
+    "fitness",
+    "hrv",
+    "sleep",
+    "readiness",
+    "mcp-server",
+    "oura-api",
+    "wearables",
+    "quantified-self",
+    "read-only"
+  ],
+  "homepage": "https://github.com/royreznik/oura-ring-mcp#readme",
+  "bugs": "https://github.com/royreznik/oura-ring-mcp/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/royreznik/oura-ring-mcp.git"
+  },
+  "license": "MIT",
+  "author": "Roy Reznik",
+  "type": "module",
+  "bin": {
+    "oura-ring-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepare": "npm run build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "start": "node dist/index.js",
+    "inspect": "npx @modelcontextprotocol/inspector node dist/index.js",
+    "test:coverage": "vitest run --coverage",
+    "version": "node scripts/sync-versions.mjs && git add server.json plugin .claude-plugin",
+    "prebuild": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "smoke:live": "npm run build && node scripts/live-smoke.mjs",
+    "smoke:sandbox": "npm run build && node scripts/live-smoke.mjs --sandbox",
+    "bundle": "node scripts/build-mcpb.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@vitest/coverage-v8": "^5.0.4",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.4"
+  },
+  "mcpName": "io.github.royreznik/oura-ring-mcp",
+  "publishConfig": {
+    "access": "public"
+  }
+}

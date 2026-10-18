@@ -1,0 +1,56 @@
+{
+  "manifest_version": "0.3",
+  "name": "oura-ring-mcp",
+  "display_name": "Oura Ring (read-only)",
+  "version": "0.0.0",
+  "description": "Read-only access to your Oura Ring readiness, sleep, activity, HRV, heart rate and trends.",
+  "long_description": "Ask about your Oura Ring readiness, sleep, HRV, activity, stress and heart rate. Everything is **read-only**: the server can only send GET requests to Oura's data API.\n\n**One-time setup**\n\n1. Create an Oura API application at https://cloud.ouraring.com/oauth/applications with the redirect URI `http://localhost:8787/callback`.\n2. In a terminal, run `npx -y @royreznik/oura-ring-mcp auth` and paste the app's Client ID and Secret. Approve access in your browser.\n3. Install this extension. It reads the tokens saved in step 2 and refreshes them automatically.\n\nTokens stay on your computer, and data is fetched only from Oura's official API.\n\nFull documentation: https://github.com/royreznik/oura-ring-mcp",
+  "author": {
+    "name": "Roy Reznik",
+    "url": "https://github.com/royreznik"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/royreznik/oura-ring-mcp"
+  },
+  "homepage": "https://github.com/royreznik/oura-ring-mcp",
+  "documentation": "https://github.com/royreznik/oura-ring-mcp#readme",
+  "support": "https://github.com/royreznik/oura-ring-mcp/issues",
+  "license": "MIT",
+  "keywords": [
+    "oura",
+    "oura-ring",
+    "health",
+    "sleep",
+    "readiness",
+    "hrv",
+    "wearables",
+    "read-only"
+  ],
+  "privacy_policies": [
+    "https://github.com/royreznik/oura-ring-mcp/blob/main/PRIVACY.md",
+    "https://ouraring.com/privacy-policy"
+  ],
+  "server": {
+    "type": "node",
+    "entry_point": "dist/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": [
+        "${__dirname}/dist/index.js"
+      ],
+      "env": {}
+    }
+  },
+  "tools": [],
+  "compatibility": {
+    "platforms": [
+      "darwin",
+      "win32",
+      "linux"
+    ],
+    "runtimes": {
+      "node": ">=20.11.0"
+    }
+  }
+}
