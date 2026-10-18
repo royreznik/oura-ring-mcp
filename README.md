@@ -1,6 +1,10 @@
 # Oura Ring MCP Server (read-only)
 
+[![npm](https://img.shields.io/npm/v/@royreznik/oura-ring-mcp)](https://www.npmjs.com/package/@royreznik/oura-ring-mcp)
 [![CI](https://github.com/royreznik/oura-ring-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/royreznik/oura-ring-mcp/actions/workflows/ci.yml)
+[![oura-ring-mcp MCP server – quality and maintenance score on Glama](https://glama.ai/mcp/servers/royreznik/oura-ring-mcp/badges/score.svg)](https://glama.ai/mcp/servers/royreznik/oura-ring-mcp)
+[![Node](https://img.shields.io/badge/node-%E2%89%A520.11-339933?logo=nodedotjs&logoColor=white)](package.json)
+[![Read-only](https://img.shields.io/badge/data_access-read--only-2ea44f)](SECURITY.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 Ask Claude, Cursor, VS Code or any [MCP](https://modelcontextprotocol.io) client about your [Oura Ring](https://ouraring.com) readiness, sleep, HRV, activity, stress and heart rate, without giving it any way to change your data.
@@ -9,6 +13,11 @@ Ask Claude, Cursor, VS Code or any [MCP](https://modelcontextprotocol.io) client
 > *"Compare my HRV and lowest heart rate over the last 30 days."*
 > *"Show me last night's sleep stages and heart-rate curve."*
 > *"Does my readiness drop after days I tagged alcohol?"*
+
+[![Install in Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/install-mcp?name=oura&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIkByb3lyZXpuaWsvb3VyYS1yaW5nLW1jcCJdfQ==)
+[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install_Server-0098FF?logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect/mcp/install?name=oura&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40royreznik%2Foura-ring-mcp%22%5D%7D)
+
+(Run the one-time [`auth` step](#2-connect-your-oura-account) before or after installing.)
 
 ## Why this server
 
