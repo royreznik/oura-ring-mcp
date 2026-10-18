@@ -1,0 +1,9 @@
+# Changelog
+
+## [Unreleased]
+
+## [0.1.0]
+
+- First release: 14 read-only tools over the Oura API v2 (daily overview, trends, readiness, sleep scores, sleep periods with hypnograms, activity, workouts, sessions, stress/resilience/SpO2/cardiovascular age/VO2 max, tags, rest mode, heart rate, profile).
+- OAuth 2 with PKCE, single-use refresh-token rotation with a cross-process lock.
+- `OURA_SANDBOX=1` serves Oura's public sample data without an account.
