@@ -73,6 +73,17 @@ const rangeShape = {
     .describe("Return Oura's raw API objects instead of compact summaries with friendly units."),
 };
 
+/** Behavior shared by the day-range list tools; appended to their descriptions. */
+const RANGE_NOTE =
+  "Range: the last 7 days by default; set start and end (inclusive, YYYY-MM-DD) or days (up to 400, ignored when start is set). " +
+  "Returns { records, next_token }, oldest first. Days without data are absent, and today's data appears only after the ring syncs. " +
+  "If next_token is not null, call again with it for the rest. raw: true returns Oura's original objects.";
+
+/** The same for tools that merge several data types and so return everything in one call. */
+const MERGED_RANGE_NOTE =
+  "Range: the last 7 days by default; set start and end (inclusive, YYYY-MM-DD) or days (up to 400, ignored when start is set). " +
+  "Returns { records } oldest first, plus `unavailable` listing any data type the user didn't grant.";
+
 interface RangeArgs {
   start?: string;
   end?: string;
@@ -124,7 +135,7 @@ export function createServer(client: OuraClient, version = "0.0.0"): McpServer {
     {
       title: "Get Oura profile",
       description:
-        "The user's Oura profile (age, height, weight, biological sex, email), their ring(s) (model, size, color, firmware, setup date) and the latest ring battery level.",
+        "Get the user's Oura profile and ring hardware: age, height, weight, biological sex and email; each ring's model, size, color, firmware and setup date; and the latest battery level with its timestamp. Use it for questions about the person or the device, or to put scores in context (e.g. age next to VO2 max or cardiovascular age). Takes no arguments. A part Oura won't share (scope not granted) comes back as an error field while the rest still returns.",
       annotations: READ_ONLY,
     },
     ({ signal }) =>
@@ -156,7 +167,7 @@ export function createServer(client: OuraClient, version = "0.0.0"): McpServer {
     {
       title: "Daily overview",
       description:
-        "Everything Oura has for one day: readiness (score, contributors, temperature), sleep score and last night's main sleep (stages, HRV, lowest HR, efficiency), naps, activity (score, steps, calories), stress, resilience, SpO2, cardiovascular age, VO2 max, bedtime guidance, workouts, sessions and tags. Omit date for the latest scored day.",
+        "Get everything Oura recorded for one day in a single call: readiness (score, contributors, temperature deviation), sleep score and the night's main sleep (stages, HRV, lowest heart rate, efficiency), naps, activity (score, steps, calories), stress, resilience, SpO2, cardiovascular age, VO2 max, bedtime guidance, workouts, sessions and tags. Start here for 'today', 'last night' or any single date; use get_trends for multi-day questions and the list_* tools for one data type over a range. Omit date for the latest day with a sleep or readiness score. Data types the user didn't grant are listed under `unavailable` instead of failing the call.",
       inputSchema: {
         date: dateOnly
           .optional()
@@ -172,7 +183,7 @@ export function createServer(client: OuraClient, version = "0.0.0"): McpServer {
     {
       title: "Trends",
       description:
-        "Day-by-day table and averages (avg/min/max) over the last N days for readiness, sleep score, activity score, sleep hours and stages, HRV, lowest heart rate, temperature deviation, steps, active calories and stress, plus readiness zone counts and workouts per day.",
+        "Summarize the last N days (default 14, up to 90, including today) as a day-by-day table plus avg/min/max for readiness, sleep and activity scores, sleep hours and stages, HRV, lowest heart rate, temperature deviation, steps, active calories and stress, with readiness-zone counts and workouts per day. Use it for week or month comparisons and 'how am I trending' questions; use get_daily_overview for a single day and the list_* tools for full detail on one data type. Days without data are omitted; today is flagged in_progress and its partial activity is left out of the averages.",
       inputSchema: {
         days: z.number().int().min(1).max(90).default(14).describe("How many days to look back, including today (1-90)."),
       },
@@ -186,7 +197,7 @@ export function createServer(client: OuraClient, version = "0.0.0"): McpServer {
     {
       title: "List daily readiness",
       description:
-        "Daily readiness scores with contributors (HRV balance, resting heart rate, recovery index, body temperature, sleep balance, previous night, activity balance, sleep regularity) and temperature deviation.",
+        "List daily readiness scores (0-100, with Oura's zone: optimal 85+, good 70-84, pay_attention below 70) and their contributors: HRV balance, resting heart rate, recovery index, body temperature, sleep balance, previous night, previous-day activity, activity balance and sleep regularity, plus temperature deviation from baseline in °C. Use it to see how readiness and its drivers changed over a range; for a single day use get_daily_overview, and for readiness next to sleep and activity use get_trends. " + RANGE_NOTE,
       inputSchema: rangeShape,
       annotations: READ_ONLY,
     },
@@ -202,7 +213,7 @@ export function createServer(client: OuraClient, version = "0.0.0"): McpServer {
     {
       title: "List daily sleep scores",
       description:
-        "Daily sleep scores with contributors (total sleep, efficiency, restfulness, REM, deep sleep, latency, timing). For durations, stages, HRV and heart rate use list_sleep_periods.",
+        "List daily sleep scores (0-100, with Oura's zone) and the contributors behind them: total sleep, efficiency, restfulness, REM, deep sleep, latency and timing. Use it for 'how well did I sleep' over a range; for hours, stages, HRV and heart rate use list_sleep_periods, and for one night's hypnogram use get_sleep_period. " + RANGE_NOTE,
       inputSchema: rangeShape,
       annotations: READ_ONLY,
     },
@@ -218,7 +229,7 @@ export function createServer(client: OuraClient, version = "0.0.0"): McpServer {
     {
       title: "List sleep periods",
       description:
-        "Detailed sleep periods (nights and naps): bedtime, time asleep, deep/REM/light/awake hours, latency, efficiency, average and lowest heart rate, average HRV, breathing rate and the readiness they produced.",
+        "List individual sleep periods (nights and, by default, naps) with bedtime, hours in bed and asleep, deep/REM/light/awake hours, latency, efficiency, average and lowest heart rate, average HRV, breathing rate and the readiness score each produced. Use it for sleep duration, stages and overnight HRV or heart rate across days; use list_daily_sleep for scores only, and pass a sleep_id to get_sleep_period for the full hypnogram. Periods the user rejected or deleted are left out, and each period belongs to the day the user woke up. " + RANGE_NOTE,
       inputSchema: {
         ...rangeShape,
         include_naps: z.boolean().default(true).describe("Set false to return only long (main) sleeps."),
@@ -238,7 +249,7 @@ export function createServer(client: OuraClient, version = "0.0.0"): McpServer {
     {
       title: "Get sleep period",
       description:
-        "One sleep period by id with its hypnogram (stage segments in 5-minute resolution), heart-rate and HRV curves through the night, and readiness contributors.",
+        "Get one sleep period in full detail by its sleep_id: the same summary as list_sleep_periods plus a hypnogram (deep/light/REM/awake segments at 5-minute resolution, in local time), heart-rate and HRV curves through the night (downsampled to at most 120 points, with avg/min/max), and the readiness contributors it produced. Use it to explain one specific night; get the id from list_sleep_periods or get_daily_overview first. An unknown id returns a 404 error; raw: true returns Oura's original object.",
       inputSchema: {
         sleep_id: z.string().min(1).max(200).describe("Sleep period id (from list_sleep_periods or get_daily_overview)."),
         raw: rangeShape.raw,
@@ -257,7 +268,7 @@ export function createServer(client: OuraClient, version = "0.0.0"): McpServer {
     {
       title: "List daily activity",
       description:
-        "Daily activity: activity score and contributors, steps, active/total/target calories, walking-equivalent distance, minutes of high/medium/low activity, sedentary and resting hours, inactivity alerts. Days run 4 a.m. to 4 a.m.",
+        "List daily activity: activity score (0-100) and contributors, steps, active, total and target calories, walking-equivalent distance in km, minutes of high/medium/low activity, sedentary, resting and non-wear hours, and inactivity alerts. Use it for movement, step and calorie questions over a range; individual workouts are in list_workouts. An Oura activity day runs 4 a.m. to 4 a.m., so today's row is partial. " + RANGE_NOTE,
       inputSchema: rangeShape,
       annotations: READ_ONLY,
     },
@@ -273,7 +284,7 @@ export function createServer(client: OuraClient, version = "0.0.0"): McpServer {
     {
       title: "List workouts",
       description:
-        "Workouts (auto-detected and manually added): activity, intensity, start/end, duration, calories and distance.",
+        "List workouts, auto-detected by the ring or added manually, with activity type, label, intensity (easy/moderate/hard), source, start and end time, duration in minutes, calories and distance in km. Use it for training questions such as 'how many runs this month'; narrow it with activity, a case-insensitive substring like 'run' or 'swim'. For whole-day movement use list_daily_activity, and for heart rate during a workout call get_heart_rate with its start and end and source 'workout'. " + RANGE_NOTE,
       inputSchema: {
         ...rangeShape,
         activity: z
@@ -298,7 +309,7 @@ export function createServer(client: OuraClient, version = "0.0.0"): McpServer {
     {
       title: "List sessions",
       description:
-        "Guided and unguided sessions recorded in the Oura app (meditation, breathing, relaxation, naps, rest, body status) with mood, duration, heart rate and HRV.",
+        "List mindfulness sessions recorded in the Oura app (meditation, breathing, relaxation, nap, rest, body status) with mood, start and end time, duration, and heart-rate and HRV stats (avg/min/max). Use it for questions about guided practice and how it affected heart rate or HRV; sleep is in list_sleep_periods and exercise in list_workouts. " + RANGE_NOTE,
       inputSchema: rangeShape,
       annotations: READ_ONLY,
     },
@@ -314,7 +325,7 @@ export function createServer(client: OuraClient, version = "0.0.0"): McpServer {
     {
       title: "List daily health metrics",
       description:
-        "Per-day health metrics joined by date: stress (summary, minutes of high stress and high recovery), resilience level, average SpO2 and breathing disturbance index, cardiovascular age, VO2 max, and bedtime guidance (optimal bedtime window).",
+        "List per-day health metrics joined by date: stress (day summary, minutes of high stress and high recovery), resilience level and contributors, average SpO2 and breathing disturbance index, cardiovascular age, VO2 max, and bedtime guidance (Oura's optimal bedtime window). Use it for stress, resilience, breathing and cardio-fitness trends; readiness, sleep and activity scores have their own list_* tools. Each field appears only on days Oura computed it (VO2 max and cardiovascular age update occasionally). " + MERGED_RANGE_NOTE,
       inputSchema: {
         start: rangeShape.start,
         end: rangeShape.end,
@@ -355,7 +366,7 @@ export function createServer(client: OuraClient, version = "0.0.0"): McpServer {
     {
       title: "List tags",
       description:
-        "Tags and notes the user added in the Oura app (e.g. alcohol, caffeine, sickness, travel, custom tags), with their times and comments.",
+        "List the tags and notes the user logged in the Oura app (e.g. alcohol, caffeine, late meal, sickness, travel, custom tags) with their time, end time if any, and comments, merging classic and enhanced tags into one list sorted by time. Use it to explain unusual readiness or sleep, then cross-check the tagged days with get_daily_overview or get_trends. " + MERGED_RANGE_NOTE,
       inputSchema: { start: rangeShape.start, end: rangeShape.end, days: rangeShape.days },
       annotations: READ_ONLY,
     },
@@ -375,7 +386,8 @@ export function createServer(client: OuraClient, version = "0.0.0"): McpServer {
     "list_rest_mode_periods",
     {
       title: "List rest mode periods",
-      description: "Periods when the user turned on Rest Mode (e.g. while sick or recovering), with the symptom tags logged.",
+      description:
+        "List Rest Mode periods, which the user turns on when sick, injured or recovering, with start and end day (an ongoing period has no end) and the symptom tags logged during each. Use it to explain dips in readiness or activity, or to check whether the user was unwell on given days. Covers the last 90 days by default; set start and end (inclusive, YYYY-MM-DD) or days. A period that overlaps the range is included. Returns { records, next_token }; raw: true returns Oura's original objects.",
       inputSchema: {
         start: rangeShape.start,
         end: rangeShape.end,
@@ -395,7 +407,8 @@ export function createServer(client: OuraClient, version = "0.0.0"): McpServer {
     "get_heart_rate",
     {
       title: "Get heart rate",
-      description: `Heart-rate time series (daytime, sleep, workouts, sessions) aggregated into buckets with avg/min/max bpm, plus overall and per-source stats. Covers at most ${MAX_HEART_RATE_DAYS} days per call.`,
+      description:
+        `Get the heart-rate time series between two times, aggregated into buckets aligned to local time (5min, 15min, hour or day) with avg/min/max bpm and the dominant source, plus overall and per-source stats (awake, rest, sleep, workout, session, live). Use it for heart rate at particular times, during a workout or across a day; for overnight averages, lowest heart rate and HRV prefer list_sleep_periods. Defaults to the last 24 hours at hourly resolution; ranges are limited to ${MAX_HEART_RATE_DAYS} days per call. resolution 'raw' returns individual samples (the first ${MAX_RAW_SAMPLES}); latest: true returns only the most recent sample and ignores the other arguments. truncated: true means the range held more samples than one call fetches, so narrow it.`,
       inputSchema: {
         start: z
           .string()
@@ -438,11 +451,16 @@ export function createServer(client: OuraClient, version = "0.0.0"): McpServer {
           return {
             ...base,
             samples: samples.slice(0, MAX_RAW_SAMPLES).map((s) => ({ t: s.timestamp, bpm: s.bpm, source: s.source })),
-            truncated: samples.length > MAX_RAW_SAMPLES || undefined,
-            next_token: res.next_token,
+            truncated: samples.length > MAX_RAW_SAMPLES || res.next_token !== null || undefined,
           };
         }
-        return { ...base, resolution, buckets: aggregateHeartRate(samples, resolution as Resolution), next_token: res.next_token };
+        return {
+          ...base,
+          resolution,
+          buckets: aggregateHeartRate(samples, resolution as Resolution),
+          // There is no next_token input: a range too big for one call is narrowed instead.
+          truncated: res.next_token !== null || undefined,
+        };
       }),
   );
 

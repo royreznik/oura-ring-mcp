@@ -4,7 +4,7 @@ import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { OuraClient } from "../src/client.js";
 import { createServer, parseInstant, toDayRange } from "../src/server.js";
-import { DAY, ouraApi, staticTokens } from "./helpers.js";
+import { DAY, fakeFetch, json, ouraApi, staticTokens } from "./helpers.js";
 
 async function connect(oura: OuraClient) {
   const server = createServer(oura, "test");
@@ -250,6 +250,19 @@ describe("MCP server", () => {
 
     const latest = await call(client, "get_heart_rate", { latest: true });
     expect(latest.data.latest).toMatchObject({ bpm: 150 });
+  });
+
+  it("get_heart_rate flags a range too big for one call", async () => {
+    let page = 0;
+    const fetch = fakeFetch(() =>
+      json({ data: [{ timestamp: "2026-10-13T04:00:00Z", bpm: 50, source: "sleep" }], next_token: `page-${++page}` }),
+    );
+    const client = await connect(new OuraClient(staticTokens, { fetch, maxPages: 2 }));
+    const hourly = await call(client, "get_heart_rate", {});
+    expect(hourly.data.truncated).toBe(true);
+    expect(hourly.data).not.toHaveProperty("next_token");
+    const raw = await call(client, "get_heart_rate", { resolution: "raw" });
+    expect(raw.data.truncated).toBe(true);
   });
 
   it("get_heart_rate refuses ranges over 30 days", async () => {

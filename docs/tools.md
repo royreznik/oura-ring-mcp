@@ -99,4 +99,4 @@ Defaults to the last 90 days. Each period has `start_day`, `end_day` (or `ongoin
 | `source` | all | `awake`, `rest`, `sleep`, `workout`, `session`, `live` |
 | `latest` | false | Only the most recent sample |
 
-Range is limited to 30 days per call. Buckets are aligned to local wall-clock time: `{start, avg_bpm, min_bpm, max_bpm, samples, source}`. `stats` has overall and `by_source` avg/min/max.
+Range is limited to 30 days per call. `truncated: true` means the range held more samples than one call fetches; narrow it. Buckets are aligned to local wall-clock time: `{start, avg_bpm, min_bpm, max_bpm, samples, source}`. `stats` has overall and `by_source` avg/min/max.
