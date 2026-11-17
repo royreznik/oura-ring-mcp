@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [1.0.1]
+
+- Updated transitive dependencies (`fast-uri`, `hono`, `body-parser`) to fix newly published security advisories. They are only used by the MCP SDK's HTTP transports, which this stdio server never starts, so they weren't reachable, but installs now audit clean.
+- Updated `@modelcontextprotocol/sdk` to 1.32.2.
+
 ## [1.0.0]
 
 First stable release. Tool names, inputs and output shapes are now covered by semver: breaking changes will only ship in a new major version.
